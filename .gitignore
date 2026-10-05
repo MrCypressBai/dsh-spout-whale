@@ -1,0 +1,9 @@
+.DS_Store
+*.app/
+build/
+node_modules/
+tools/src.webp
+tools/sprite.png
+tools/*-preview*.png
+tools/strip-row*.png
+tools/zoom.png

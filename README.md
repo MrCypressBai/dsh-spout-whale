@@ -8,7 +8,9 @@
 
 透明 · 置顶 · 可拖动 · 88 帧动画 · 16 个注视方向 · 实时显示 DeepSeek Harness 运行状态
 
+[![release](https://img.shields.io/github/v/release/MrCypressBai/spout-whale?style=flat-square&color=1f6feb)](https://github.com/MrCypressBai/spout-whale/releases/latest)
 ![platform](https://img.shields.io/badge/platform-macOS%2015%2B-1f6feb?style=flat-square)
+![arch](https://img.shields.io/badge/arch-universal%20(Intel%20%2B%20Apple%20Silicon)-2ea44f?style=flat-square)
 ![swift](https://img.shields.io/badge/Swift-AppKit-f05138?style=flat-square&logo=swift&logoColor=white)
 ![deps](https://img.shields.io/badge/dependencies-none-2ea44f?style=flat-square)
 ![size](https://img.shields.io/badge/App-1.5%20MB-2ea44f?style=flat-square)
@@ -48,6 +50,25 @@
 | **单实例守卫** | 怎么启动都不会开出第二只鲸鱼 |
 | **不碰用户配置** | 位置/大小存 `UserDefaults`；自测模式走独立域，跑测试不会改你的设置 |
 | **状态气泡不挡点击** | 气泡窗口 `ignoresMouseEvents = true`，永远不抢你的鼠标 |
+
+---
+
+## 直接下载（不想编译的话）
+
+去 **[Releases](https://github.com/MrCypressBai/spout-whale/releases/latest)** 下这两个文件之一：
+
+| 文件 | 给谁用 | 怎么装 |
+| --- | --- | --- |
+| `SpoutWhale-1.0.0-macos-universal.zip` | 想直接跑起来 | 解压得到 `SpoutWhale.app`，拖进「应用程序」 |
+| `spout-whale-pet-1.0.0.tar.gz` | 装了 `@michengai/dsh-codex-pet` 插件 | 解压到 `~/.dsh/codex-pet/pets/`，回 DSH 宠物设置刷新 |
+
+包是 **ad-hoc 签名、未做 Apple 公证**，macOS 会拦一次：**右键点图标 → 打开 → 弹窗里再点一次「打开」**。命令行等价做法：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/SpoutWhale.app
+```
+
+二进制是**通用架构**，Intel 和 Apple Silicon 都原生跑，不需要 Rosetta。
 
 ---
 
@@ -216,7 +237,13 @@ spout-whale/
   （**注意**：Command Line Tools 自带的 `swiftc` 6.2.3 与 CLT 的 SDK 26.2 不匹配，会报 `this SDK is not supported by the compiler`）
 - SDK：`.../Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk`
 - `-module-cache-path /tmp/swift-mc`（默认缓存目录不可写）
-- `-target x86_64-apple-macosx15.0 -swift-version 5`
+- `-swift-version 5 -target <arch>-apple-macosx15.0`
+
+`build.sh` 默认编**通用二进制**：`x86_64` 和 `arm64` 各编一份再 `lipo -create` 合成。任一架构编不出来会自动退回单架构，不会让整个构建失败。只要一个架构：
+
+```bash
+ARCHS="arm64" sh desktop/build.sh ./SpoutWhale.app
+```
 
 改成你自己的路径即可。图集管线需要 `sharp`：
 

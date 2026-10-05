@@ -1,8 +1,7 @@
-import { createRequire } from 'module';
-const require = createRequire('/Users/cypress/.dsh/profiles/desktop/package.json');
-const sharp = require('sharp');
+import { sharp, ROOT } from './env.mjs';
+import { join } from 'node:path';
 
-const FILE = process.argv[2] || '/Users/cypress/.dsh/codex-pet/pets/spout-whale/spritesheet.png';
+const FILE = process.argv[2] || join(ROOT, 'spritesheet.png');
 const CW = 192, CH = 208;
 const { data, info } = await sharp(FILE).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 console.log('尺寸 ' + info.width + 'x' + info.height + '  通道 ' + info.channels);

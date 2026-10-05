@@ -25,8 +25,12 @@
 ## 运行
 
 ```bash
-npm i sharp          # 或在有 sharp 的项目里用 createRequire 引
-node sprite.mjs && node render.mjs && node build.mjs && node verify.mjs
+npm i sharp                                    # 在仓库根装一次
+node tools/sprite.mjs
+node tools/build.mjs                           # 输出到仓库根
+node tools/verify.mjs
 ```
+
+路径都由 `tools/env.mjs` 按脚本自身位置解析，所以在任何目录下调用都行。`sharp` 的查找顺序是先常规 `require('sharp')`，找不到再退回 `$DSH_HOME/profiles/desktop` 里那份——没装 sharp 时会直接告诉你怎么办，而不是报一句 module not found。
 
 参考图不在此仓库。想重跑，把任意同风格的鲸鱼图命名为 `src.webp` 放进本目录——`sprite.mjs` 里的几何参数（缩放、偏移、喷口位置）是照着原图调的，换图需要重新调。

@@ -1,284 +1,222 @@
 <div align="center">
 
-<img src="docs/images/hero.png" alt="SpoutWhale 浮在 macOS 桌面上，头顶弹出 DSH 运行状态气泡" width="620">
+<img src="docs/images/hero.png" alt="鲸鱼浮在桌面上，头顶弹出 DSH 状态气泡" width="620">
 
-# 🐳 SpoutWhale
+# SpoutWhale
 
-**一只住在 macOS 桌面上的喷水鲸鱼。**
+一个 macOS 桌宠。一只蓝鲸浮在桌面上摆尾喷水，光标移过去会转头看你，
+旁边还会弹个气泡说明 DeepSeek Harness 现在在干什么。
 
-透明 · 置顶 · 可拖动 · 88 帧动画 · 16 个注视方向 · 实时显示 DeepSeek Harness 运行状态
+Swift + AppKit，没有 Electron 也没有运行时依赖，App 本体 1.5 MB。
 
-[![release](https://img.shields.io/github/v/release/MrCypressBai/spout-whale?style=flat-square&color=1f6feb)](https://github.com/MrCypressBai/spout-whale/releases/latest)
+[![release](https://img.shields.io/github/v/release/MrCypressBai/dsh-spout-whale?style=flat-square&color=1f6feb)](https://github.com/MrCypressBai/dsh-spout-whale/releases/latest)
 ![platform](https://img.shields.io/badge/platform-macOS%2015%2B-1f6feb?style=flat-square)
-![arch](https://img.shields.io/badge/arch-universal%20(Intel%20%2B%20Apple%20Silicon)-2ea44f?style=flat-square)
-![swift](https://img.shields.io/badge/Swift-AppKit-f05138?style=flat-square&logo=swift&logoColor=white)
-![deps](https://img.shields.io/badge/dependencies-none-2ea44f?style=flat-square)
-![size](https://img.shields.io/badge/App-1.5%20MB-2ea44f?style=flat-square)
+![arch](https://img.shields.io/badge/arch-universal-2ea44f?style=flat-square)
 ![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
 
 </div>
 
 ---
 
-## 这是什么
+## 装上试试
 
-一个原生 macOS 桌宠：一只 DeepSeek 风格的蓝鲸浮在桌面上摆尾、喷水、游动，鼠标经过时会**转头看向光标**。它还会在旁边弹出一个状态气泡，**实时报告 DeepSeek Harness 正在干什么**——思考中、执行工具（带真实耗时）、等你回答、还是出错了。
+不想自己编译就去 [Releases](https://github.com/MrCypressBai/dsh-spout-whale/releases/latest) 下：
 
-没有 Electron，没有运行时依赖，App 本体 1.5 MB。
-
-> 它最初是 DSH Web GUI 里的一个网页宠物。这个仓库是把它改造成**独立桌面程序**的结果。
-
----
-
-## 演示
-
-<img src="docs/images/actions.gif" alt="11 组动作演示" width="300">
-
-从左到右依次是：**空闲 → 工作中（摆尾+喷水）→ 挥手 → 跳跃 → 完成待查看 → 等待用户 → 失败 → 16 个注视方向 → 回到空闲**。帧时长与 Codex 图集协议一致。
-
----
-
-## 特性
-
-| 特性 | 说明 |
+| 文件 | 用途 |
 | --- | --- |
-| **88 帧动画** | 8 列 × 11 行图集，11 组动作，每组帧数/帧时长严格对齐 Codex 图集协议 |
-| **16 方向注视** | 光标在 28pt 死区外时，鲸鱼转头看向光标，按 22.5° 分 16 档（000° 在正上方） |
-| **真·透明 + 置顶** | `NSWindow` 无边框 + `isOpaque=false` + `.floating`，跨桌面（`canJoinAllSpaces`）常驻 |
-| **自主行为** | 空闲时会随机游动、挥手、跳跃；自己会撞到屏幕边缘停下 |
-| **状态气泡** | 零侵入读取 DSH 会话投影，把 Harness 的实时状态映射成文案 + 姿态 |
-| **单实例守卫** | 怎么启动都不会开出第二只鲸鱼 |
-| **不碰用户配置** | 位置/大小存 `UserDefaults`；自测模式走独立域，跑测试不会改你的设置 |
-| **状态气泡不挡点击** | 气泡窗口 `ignoresMouseEvents = true`，永远不抢你的鼠标 |
+| `SpoutWhale-1.0.0-macos-universal.zip` | 解压出 `SpoutWhale.app`，拖进「应用程序」就行 |
+| `spout-whale-pet-1.0.0.tar.gz` | 给装了 `@michengai/dsh-codex-pet` 插件的人，解压到 `~/.dsh/codex-pet/pets/` |
 
----
-
-## 直接下载（不想编译的话）
-
-去 **[Releases](https://github.com/MrCypressBai/spout-whale/releases/latest)** 下这两个文件之一：
-
-| 文件 | 给谁用 | 怎么装 |
-| --- | --- | --- |
-| `SpoutWhale-1.0.0-macos-universal.zip` | 想直接跑起来 | 解压得到 `SpoutWhale.app`，拖进「应用程序」 |
-| `spout-whale-pet-1.0.0.tar.gz` | 装了 `@michengai/dsh-codex-pet` 插件 | 解压到 `~/.dsh/codex-pet/pets/`，回 DSH 宠物设置刷新 |
-
-包是 **ad-hoc 签名、未做 Apple 公证**，macOS 会拦一次：**右键点图标 → 打开 → 弹窗里再点一次「打开」**。命令行等价做法：
+包是 ad-hoc 签名、没做公证，首次打开会被 macOS 拦一次。右键点图标 → 打开 → 弹窗里再点一次「打开」就好了。嫌麻烦就用命令行：
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/SpoutWhale.app
 ```
 
-二进制是**通用架构**，Intel 和 Apple Silicon 都原生跑，不需要 Rosetta。
+Intel 和 Apple Silicon 都能原生跑，不需要 Rosetta。
 
----
+## 怎么用
 
-## 快速开始
+拖动身体换位置，单击挥手，右键出菜单（换姿态、大小、开关气泡、退出）。菜单栏也有个 🐳 图标，功能一样。
 
-### 1. 构建
+没 Dock 图标，不抢焦点，焦点在哪个应用都跟它无关。
 
-```bash
-git clone https://github.com/MrCypressBai/spout-whale.git
-cd spout-whale
-sh desktop/build.sh ./SpoutWhale.app
-```
+闲着的时候它自己会游动、跳跃、喷水，游到屏幕边上会停下转向。光标在附近它会转头看你——按 22.5° 分成 16 个方向，正上方是 0°，跟 Codex 图集协议的注视行对齐。
 
-> 需要一个可用的 Swift 工具链。`build.sh` 里写死了本机验证过的组合（Xcode 自带 `swiftc` + `MacOSX15.5.sdk`）——见 [从源码重建](#从源码重建)。
-
-### 2. 运行
+位置和大小记在 `UserDefaults` 里。想恢复默认（左下角、1× 大小）：
 
 ```bash
-sh scripts/spoutwhale-ctl.sh start     # start | stop | restart | status
+# 先退掉 App
+defaults delete ai.micheng.spoutwhale
 ```
 
-或者直接双击 `SpoutWhale.app`。
+别只删 plist，`cfprefsd` 会缓存旧值，删了也没用。
 
-### 3. 装到 `~/Applications`（可选）
+关掉之后想再打开，双击 App 就行，或者：
 
 ```bash
-sh scripts/install.sh "$HOME/Applications"               # 只安装
-sh scripts/install.sh "$HOME/Applications" --autostart   # 顺便开机自启（LaunchAgent）
+sh scripts/spoutwhale-ctl.sh start     # 也可以 stop / restart / status
 ```
 
-**撞到过并已修掉的坑**：
+从哪条路启动都只会有一个进程——`open` 靠 LaunchServices 去重，直接跑二进制时 App 自己按 bundle id 查一遍。
 
-- **单实例**。`open` 靠 LaunchServices 天然去重，但**直接执行二进制**（LaunchAgent 就是这条路）会开出多个实例——两只鲸鱼各记一份位置、互相覆盖气泡。现在 App 自己按 bundle id 探测并退出（`--force` 可强行再开）。
-- **测完别把你的设置改了**。`--drivetest` 会真拖窗口、真遍历大小菜单、并且断言"位置已落盘"。所以自测模式把 `UserDefaults` 重定向到独立域 `ai.micheng.spoutwhale.test`，实测跑完真实域**仍然不存在**。
+写的时候顺手想过做成 DSH 插件，最后没做。一是目标本来就是"脱离浏览器"，塞回网页里就没意义了；二是拿状态只要读文件，不需要走宿主 API。
 
----
+## 状态气泡
 
-## DSH 运行状态气泡
+<img src="docs/images/bubble.png" alt="气泡显示：执行中… 7s / 请先读取并遵循宠物创建 Skill · 319K tok" width="620">
 
-<img src="docs/images/bubble.png" alt="状态气泡显示：执行中… 7s / 请先读取并遵循宠物创建 Skill · 319K tok" width="620">
-
-**零侵入**：不改 DSH、不装插件、不重启。直接读 DSH 自己写在磁盘上的**会话投影缓存**：
+气泡读的是 DSH 自己写在磁盘上的会话投影，属于纯文件读取——不用改 DSH，不用装插件，不用重启：
 
 ```
 ~/.dsh/storages/session_projcache_archive_manager_v2/sessions/session_*.json
 ~/.dsh/storages/session_projcache/sessions/session-*.json
 ```
 
-每 0.7 秒扫一次，取 mtime 最新的会话，从 `record.rows.*.val` 推导状态：
+每 0.7 秒扫一次，挑 mtime 最新的那个会话，从 `record.rows.*.val` 里判断状态：
 
-| DSH 字段 | 判定 | 气泡标题 | 宠物姿态 |
-| --- | --- | --- | --- |
-| `userQuestions.questions.active` 非空 | 在等你 | 等你回答 N 个问题 | 等待用户（行 6） |
-| `llmRetry` 非空 / `goal.failure` | 异常 | 重试中…(N) / 出错了 | 失败（行 5） |
-| `sessionStats.pendingCalls` 非空 | 工具执行中 | **执行中… Ns** | 工作中（行 7） |
-| `openStep.firstTokenTime` 为空 | 等首 token | 思考中… | 工作中（行 7） |
-| 有 `openStep` 或 `openTurnStartSeq` | 生成中 | 生成中… | 工作中（行 7） |
-| `openTurnStartSeq` 为空 | 空闲 | 空闲中 → 收起气泡 | 先播一次 review（行 8）再回空闲 |
+| 字段 | 状态 | 姿态 |
+| --- | --- | --- |
+| `userQuestions.questions.active` 非空 | 等你回答 N 个问题 | 等待用户（行 6） |
+| `llmRetry` 非空，或 `goal.failure` | 重试中…(N) / 出错了 | 失败（行 5） |
+| `sessionStats.pendingCalls` 非空 | 执行中… Ns | 工作中（行 7） |
+| `openStep.firstTokenTime` 为空 | 思考中… | 工作中（行 7） |
+| 有 `openStep` 或 `openTurnStartSeq` | 生成中… | 工作中（行 7） |
+| `openTurnStartSeq` 为空 | 空闲中（气泡收起） | 先播一次行 8 再回空闲 |
 
-副行显示 **会话标题 · 待办 完成/总数 · 已解码 token**。标题里的秒数是**真实工具耗时**（来自 `pendingCalls` 的起始时间戳），不是估算。
+副行是会话标题、待办进度和已解码 token。工具那里显示的秒数是真的——`pendingCalls` 里存了每个调用的起始时间戳，减一下就出来了，不是自己数的。
 
-### 陈旧状态怎么办
+### 状态过期了怎么办
 
-投影里的行值**只在变化时才落盘**，所以"文件旧"不等于"状态旧"——一次 20 分钟的构建，跑完前文件一个字都不会动。但反过来，如果 DSH 被杀或崩在工具执行中途，文件就永远停在最后一刻，`pendingCalls` 永远非空，气泡会一直挂着「执行中… 3600s」。所以有两道闸：
+投影里的行值是**变了才写盘**。所以文件旧不代表状态旧：跑一个 20 分钟的构建，这中间文件一个字都不会动。
 
-1. **宿主在不在**（硬闸，精确）：`NSRunningApplication` 按 bundle id 查 DSH 进程，没在跑就一律当空闲。
-2. **文件新鲜度**（软闸，兜底）：投影文件超过 **30 分钟**没被写过也算空闲。这个界是有意的折中：明显大于任何合理单步，又远小于"永远卡住"。
+但反过来，如果 DSH 被杀掉或者崩在工具执行中途，文件就永远停在那一刻，`pendingCalls` 一直非空，气泡会挂着「执行中… 3600s」不放。所以加了两道：
 
-> **依赖披露**：这条通路读的是 dsh 插件 `@michengai/dsh-archive-manager` 写出的会话投影。该插件若被卸载，气泡会自动静默（宠物退回纯自主行为），不报错、不崩溃。
->
-> 不想用这个功能？右键菜单里关掉「状态气泡」即可。
+1. DSH 进程还在不在。用 `NSRunningApplication` 按 bundle id 查一下，不在就直接当空闲。
+2. 投影文件超过 30 分钟没动过，也当空闲。这个数字是拍的：比任何合理的单步都长，又不至于让气泡永远卡着。
 
----
+这个功能依赖 `@michengai/dsh-archive-manager` 插件写出的投影文件。插件被卸了气泡就自动不显示，宠物退回自己玩，不会报错。不想用的话右键关掉「状态气泡」就行。
 
-## 它是怎么做的
+## 动画
 
-### ① 图集：不是让 AI 画 88 张图
+<img src="docs/images/actions.gif" alt="11 组动作演示" width="300">
+
+顺序是空闲 → 工作中 → 挥手 → 跳跃 → 完成待查看 → 等待用户 → 失败 → 16 个注视方向 → 回到空闲，帧时长跟 `lib/client.js` 里那张表一致。
 
 <img src="docs/images/atlas.png" alt="8 列 11 行图集，逐行标注动作" width="560">
 
-Codex 宠物协议要求 **1536×2288 的 8 列 11 行图集**（每格 192×208，`spriteVersionNumber: 2`）。最大的难点是**帧间角色一致性**——而 AI 生图最不擅长的恰恰就是这个。
+图集是协议规定的 1536×2288，8 列 11 行，每格 192×208，`spriteVersionNumber: 2`。帧数按行固定：6/8/8/4/5/8/6/6/6，最后两行是 16 个注视方向，没有的格子留空。
 
-所以这里的路线是：**一张参考图 + 确定性 2D 变形**。
+`pet.json` 和 `spritesheet.png` 就是 `@michengai/dsh-codex-pet` 插件要的那两个文件，把这个目录丢进 `~/.dsh/codex-pet/pets/` 它同时也能当网页版宠物用。
+
+## 图集是怎么来的
+
+做这个最麻烦的地方是 88 帧之间角色不能变形——尾巴会飘、眼睛会跑、体型会忽大忽小。生成模型干这个恰恰最不稳。
+
+所以没用生图，走的是一张参考图 + 确定性变形：
 
 ```
-参考图 (474×474)
-   │  tools/sprite.mjs    抠图 · 去白边 · 连通域清理 · 反预乘颜色
-   ▼
+参考图
+  │ tools/sprite.mjs   抠图、去白边、连通域清理
+  ▼
 sprite.png (474×349 RGBA)
-   │  tools/render.mjs    平滑位移场反向映射 + 预乘双线性 + 2×2 超采样
-   │  tools/actions.mjs   11 组动作参数（弯曲/鳍/尾/喷水/仿射）
-   ▼
-8 × 11 格 → tools/build.mjs → spritesheet.png (1536×2288)
-   │  tools/verify.mjs    逐格 alpha 包围盒 / 越界检测 / 无效帧留空校验
-   ▼
+  │ tools/render.mjs   位移场反向映射 + 预乘双线性 + 2×2 超采样
+  │ tools/actions.mjs  11 组动作参数
+  ▼
+spritesheet.png (1536×2288)
+  │ tools/verify.mjs   逐格包围盒 / 越界 / 无效帧留空
 ```
 
-关键在于**位移场是连续的**：体轴方向的正弦位移（振幅随离头部距离增大 → 尾部摆幅最大、头部几乎不动），叠加胸鳍/尾鳍的局部高斯旋转和整体仿射。因为是反查像素而不是切割图层，**永远不会有接缝**，也不会出现"切下来的尾巴和身体对不上"的断层。
+位移场是连续的：沿体轴的正弦位移，振幅随离头部越远越大，所以尾巴摆得最狠、头部基本不动（头要是跟着动，整只角色就"飘"起来了）。胸鳍和尾鳍另外叠一层局部旋转。
 
-喷水是唯一手绘的部分：一条竖直水柱 + 12 颗扇形水花，用比本体更浅的蓝，否则会和头顶糊成一个角。
+因为是反查像素而不是切图层，接缝这事儿根本不会发生——没有图层可分。喷水是唯一手画的部分：一条竖直水柱加 12 颗扇形水花，颜色比身体浅一档，不然会跟头顶脊糊成一根角。
 
-### ② 桌面壳：AppKit 三层
+管道全在 `tools/` 里。参考图没放进来，想重跑就自己找张同风格的图命名成 `src.webp`——`sprite.mjs` 里的几何参数是照着原来那张调的，换图要重调。
 
-```
-PetApp    行为调度器 —— 随机动作权重、游动位移、与 DSH 状态竞争姿态优先级
-PetPanel  NSPanel  —— 无边框 · 非激活 · .floating · canJoinAllSpaces
-PetView   NSView   —— layer.contents 直接贴 CGImage，按 contentsRect 切格
-```
+## 自己编译
 
-姿态优先级：**CLI 指定 > DSH 真实状态 > 刚完成窗口（4 秒 review）> 自主随机**。
-
-渲染后端从网页版的 CSS `background-position` 换成 `CALayer.contents`——图集协议和帧时长表原样照搬，所以两边的动画表现逐帧一致。
-
-### ③ 状态：只读文件
-
-没有什么比"读几个 JSON"更不打扰宿主的了。见 [上文](#dsh-运行状态气泡)。
-
----
-
-## 命令行参数
-
-正常使用不需要，这些都是自测/诊断用的：
-
-| 参数 | 作用 |
-| --- | --- |
-| `--selftest` | 图集逐格校验：有效帧必须有内容、无效帧必须留空 |
-| `--statustest` | 状态推导 10 个分支 + 4 条新鲜度闸门断言 |
-| `--drivetest` | 事件链路自测：拖拽 / 点击 / 菜单 / 落盘 / 11 个姿态渲染行 / 注视命中 |
-| `--at x,y` | 指定初始位置（屏幕点坐标，y 向上） |
-| `--pose <key>` | 固定某个姿态 |
-| `--status-dir <path>` | 用受控目录替代真实 DSH 投影（注入测试用） |
-| `--level <n>` | 指定面板层级 |
-| `--log <path>` | 打开日志 |
-| `--force` | 跳过多实例守卫，强行再开一只 |
-
----
-
-## 项目结构
-
-```
-spout-whale/
-├── pet.json                 # 宠物清单（Codex 图集协议）
-├── spritesheet.png          # 1536×2288 图集
-├── desktop/                 # 桌面 App 源码
-│   ├── main.swift           #   AppKit 窗口 + 行为调度 + 拖拽/菜单/持久化
-│   ├── status.swift         #   DSH 状态读取 + 气泡窗口
-│   ├── Info.plist
-│   └── build.sh
-├── scripts/
-│   ├── install.sh           # 安装到 ~/Applications（可选 LaunchAgent 自启）
-│   ├── spoutwhale-ctl.sh    # start | stop | restart | status
-│   └── ai.micheng.spoutwhale.plist
-├── tools/                   # 图集生成管线（见上）
-└── docs/images/
+```bash
+git clone https://github.com/MrCypressBai/dsh-spout-whale.git
+cd dsh-spout-whale
+sh desktop/build.sh ./SpoutWhale.app
 ```
 
-`pet.json` + `spritesheet.png` 正是 DSH 的 `@michengai/dsh-codex-pet` 插件需要的两个文件——把这个目录放进 `~/.dsh/codex-pet/pets/`，它同时也能作为**网页版宠物**使用。
+`build.sh` 里写死了本机验证过的工具链组合，换机器可能要改：
 
----
+- 编译器用 Xcode 自带的 `swiftc`。**别用 Command Line Tools 那个**——CLT 的 swiftc 6.2.3 配 CLT 的 SDK 26.2 版本对不上，会报 `this SDK is not supported by the compiler`。
+- SDK 用 `MacOSX15.5.sdk`
+- `-module-cache-path /tmp/swift-mc`，默认缓存目录在有些环境写不进去
+- `-swift-version 5`
 
-## 从源码重建
-
-`build.sh` 里写死了本机验证过的组合：
-
-- 编译器：`/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc`
-  （**注意**：Command Line Tools 自带的 `swiftc` 6.2.3 与 CLT 的 SDK 26.2 不匹配，会报 `this SDK is not supported by the compiler`）
-- SDK：`.../Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk`
-- `-module-cache-path /tmp/swift-mc`（默认缓存目录不可写）
-- `-swift-version 5 -target <arch>-apple-macosx15.0`
-
-`build.sh` 默认编**通用二进制**：`x86_64` 和 `arm64` 各编一份再 `lipo -create` 合成。任一架构编不出来会自动退回单架构，不会让整个构建失败。只要一个架构：
+默认出通用二进制（x86_64 + arm64 各编一份再 `lipo` 合起来），某个架构编挂了会自动退回单架构，不会整个构建失败。只要一个：
 
 ```bash
 ARCHS="arm64" sh desktop/build.sh ./SpoutWhale.app
 ```
 
-改成你自己的路径即可。图集管线需要 `sharp`：
+跑起来之后：
 
 ```bash
-cd tools
-node sprite.mjs && node render.mjs && node build.mjs && node verify.mjs
+sh scripts/spoutwhale-ctl.sh start     # start / stop / restart / status
 ```
 
-> `tools/` 里没有参考图（`src.webp`）。想重跑管线，把任意一张同风格的鲸鱼图命名为 `src.webp` 放到 `tools/` 下——`sprite.mjs` 里的几何参数是照着原图调的，换图需要重新调。
+想装到 `~/Applications` 并开机自启：
 
----
+```bash
+sh scripts/install.sh "$HOME/Applications" --autostart
+```
 
-## 验证状态（诚实披露）
+## 目录
 
-**已验证**
+```
+dsh-spout-whale/
+├── pet.json                 # 宠物清单
+├── spritesheet.png          # 1536×2288 图集
+├── desktop/
+│   ├── main.swift           # 窗口、行为调度、拖拽、菜单、持久化
+│   ├── status.swift         # DSH 状态读取 + 气泡
+│   ├── Info.plist
+│   └── build.sh
+├── scripts/
+│   ├── install.sh
+│   ├── spoutwhale-ctl.sh
+│   └── ai.micheng.spoutwhale.plist
+├── tools/                   # 图集生成管线
+└── docs/images/
+```
 
-- `--selftest` PASS：图集 1536×2288，88 格里有效帧全部有内容、无效帧全部留空
-- `--statustest` PASS：状态推导 10 个分支 + 4 条新鲜度闸门断言全部通过，且能读到实时状态
-- **状态气泡端到端注入测试**：注入受控假状态，App 记录的变更流与姿态逐一吻合 —— `思考中…`→行 7、`执行中… 5s`→行 7、`等你回答`→行 6、`重试中(1)`→行 5、`空闲中`→先播行 8 再回行 0
-- 真实状态读取：截图里的气泡「执行中… 7s / 请先读取并遵循宠物创建 Skill · 319K tok」与当时的真实工具耗时一致
-- `--drivetest` PASS：拖拽位移精确、y 不串改、单击触发挥手、纯点击不移动窗口、右键菜单 ≥6 项含大小子菜单、位置落盘、11 个姿态各自渲染到正确行、注视在正右/正上/正左分别命中 r9c4 / r9c0 / r10c4 且死区内不触发
-- 单实例守卫：连开 3 次二进制只有 1 个实例
-- 桌面截图证明：窗口真的浮在其它应用之上、背景真透明（背后内容可见）、位置在屏内
+## 命令行参数
 
-**未验证（环境限制，非代码缺陷）**
+平时用不上，都是自测和排查用的。
 
-- **真人鼠标端到端投递**。三条合成事件通路全部实测失败：驱动 HID-tap 连 macOS 菜单栏的 Apple 菜单都点不开；`postToPid` 报成功但 App 内本地事件监听零事件；AppleScript 直接权限违例（-10004）。所以"真人点击/拖动"目前只有**事件处理器层**证据（`--drivetest` 喂的是真实 `NSEvent`，跑的就是线上那份 `mouseDown/Dragged/Up`），**没有 OS 层证据**。
-- 多显示器与运行时改分辨率。位置只在启动时夹回可见区，未监听屏幕变化事件。
+| 参数 | 作用 |
+| --- | --- |
+| `--selftest` | 逐格校验图集：有效帧得有内容，无效帧得是空的 |
+| `--statustest` | 状态推导的 10 个分支 + 4 条过期判断 |
+| `--drivetest` | 事件链路：拖拽、点击、菜单、落盘、姿态行、注视命中 |
+| `--at x,y` | 指定初始位置 |
+| `--pose <key>` | 固定某个姿态 |
+| `--status-dir <path>` | 换成受控目录，用来注入假状态 |
+| `--level <n>` / `--log <path>` / `--force` | 面板层级 / 日志 / 跳过多实例检查 |
 
----
+## 测过什么、没测什么
 
-## 许可与致谢
+三项自测都是过的（`--selftest`、`--statustest`、`--drivetest`，退出码 0）。其中状态这块，我用 `--status-dir` 注入假状态跑了一遍端到端：注入「思考中」宠物切到行 7，注入「等待」切到行 6，注入「重试」切到行 5，注入「空闲」先播一次行 8 再回行 0，App 自己记的变更日志跟这些一一对上。真实状态下截的图里，气泡写着「执行中… 7s」，跟当时那次调用实际跑了多久一致。
 
-代码以 **MIT** 发布，见 [LICENSE](LICENSE)。
+顺手修掉的几个坑，都是跑起来才发现的：
 
-鲸鱼造型派生自作者提供的参考图（DeepSeek 风格的蓝鲸标志），仅作个人学习与桌面美化用途；商标与原始标志的权利归其所有者。如果你要用在商业场景，请自行确认授权。
+- **直接执行二进制会开出第二只。** `open SpoutWhale.app` 两次只有一个进程（LaunchServices 会去重），但直接跑二进制两次就是两个进程。而 LaunchAgent 走的就是直接跑二进制这条路。两只鲸鱼各记一份位置、互相覆盖气泡。现在 App 按 bundle id 查一遍，已经在跑就直接退出。
+- **`mtime` 拿进来没用。** 状态推导里一直带着 mtime，但从来没读过。第二道闸就是补这个。
+- **跑自测会改掉你的设置。** `--drivetest` 会真拖窗口、真遍历大小菜单、还要断言位置落盘，跑完 `defaults read` 里就躺着 `scale=1.5` 和一堆坐标。现在自测模式读写都走单独的域，真实域跑完还是不存在。
 
-**协议参考**：[petx](https://github.com/IchenDEV/petx) 的 Codex 宠物图集协议（192×208 / 8 列 / `spriteVersionNumber: 2` / rows 9–10 为 16 个注视方向）。
+没测的是真人鼠标点击。这台机器上三条合成输入的路全废了：驱动的 HID 点击连 macOS 菜单栏的 Apple 菜单都点不开，`postToPid` 报发送成功但 App 里的事件监听一个都没收到，AppleScript 直接权限违例（-10004）。所以拖拽和点击目前只有事件处理器层的证据——`--drivetest` 喂的是真的 `NSEvent`，跑的就是线上那份 `mouseDown/mouseDragged/mouseUp`——但系统层没有证据。这个我不想含糊过去。
+
+多显示器和运行中改分辨率也没处理，位置只在启动的时候夹回可见区。
+
+## 许可
+
+代码 MIT，见 [LICENSE](LICENSE)。
+
+鲸鱼造型是从作者提供的参考图派生的（DeepSeek 风格的蓝鲸标志），只当个人学习和你自己桌面装饰用。商标和原始标志的权利归对方。要商用自己确认授权。
+
+图集协议参考 [petx](https://github.com/IchenDEV/petx)。

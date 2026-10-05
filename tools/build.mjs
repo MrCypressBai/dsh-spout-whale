@@ -1,17 +1,16 @@
 // build.mjs — 渲染 8x11 图集并写出 spritesheet.png / pet.json
-import { createRequire } from 'module';
+import { sharp, HERE, ROOT } from './env.mjs';
 import fs from 'fs';
 import path from 'path';
-const require = createRequire('/Users/cypress/.dsh/profiles/desktop/package.json');
-const sharp = require('sharp');
+import { join } from 'node:path';
 import { loadSprite, renderCell, toRGBA, CELL_W, CELL_H } from './render.mjs';
 import { paramsFor } from './actions.mjs';
 
 const COLS = 8, ROWS = 11;
 const SHEET_W = COLS * CELL_W, SHEET_H = ROWS * CELL_H;   // 1536 x 2288
-const OUT = process.argv[2] || '/Users/cypress/.dsh/codex-pet/pets/spout-whale';
+const OUT = process.argv[2] || ROOT;
 
-await loadSprite('sprite.png');
+await loadSprite(join(HERE, 'sprite.png'));
 
 const sheet = Buffer.alloc(SHEET_W * SHEET_H * 4);
 const t0 = Date.now();
@@ -67,12 +66,12 @@ function grid(rgb, w, h, cw, ch, gap) {
 const BG = [246, 247, 250];
 const contactRGB = overBg(sheet, SHEET_W, SHEET_H, BG);
 await sharp(contactRGB, { raw: { width: SHEET_W, height: SHEET_H, channels: 3 } })
-  .resize(768, 1144).png().toFile('preview-contact.png');
+  .resize(768, 1144).png().toFile(join(HERE, 'preview-contact.png'));
 
 const gridRGB = overBg(sheet, SHEET_W, SHEET_H, BG);
 grid(gridRGB, SHEET_W, SHEET_H, CELL_W, CELL_H, 2);
 await sharp(gridRGB, { raw: { width: SHEET_W, height: SHEET_H, channels: 3 } })
-  .resize(900, 1341).png().toFile('preview-grid.png');
+  .resize(900, 1341).png().toFile(join(HERE, 'preview-grid.png'));
 
 for (let row = 0; row < ROWS; row++) {
   const y0 = row * CELL_H;
@@ -82,6 +81,6 @@ for (let row = 0; row < ROWS; row++) {
   const bandRGB = overBg(band, SHEET_W, CELL_H, BG);
   grid(bandRGB, SHEET_W, CELL_H, CELL_W, CELL_H, 1);
   await sharp(bandRGB, { raw: { width: SHEET_W, height: CELL_H, channels: 3 } })
-    .resize(SHEET_W, SHEET_H).png().toFile('strip-row' + row + '.png');
+    .resize(SHEET_W, SHEET_H).png().toFile(join(HERE, 'strip-row' + row + '.png'));
 }
 console.log('OK -> ' + OUT);

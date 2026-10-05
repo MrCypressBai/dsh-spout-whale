@@ -1,7 +1,6 @@
 // render.mjs — 把鲸鱼精灵按“平滑位移场”变形渲染到 192x208 格
-import { createRequire } from 'module';
-const require = createRequire('/Users/cypress/.dsh/profiles/desktop/package.json');
-const sharp = require('sharp');
+import { sharp, HERE } from './env.mjs';
+import { join } from 'node:path';
 
 export const CELL_W = 192, CELL_H = 208;
 export const SC = 0.355, OX = 11.85, OY = 57.0;   // sprite(474x349) -> cell
@@ -13,7 +12,7 @@ export const MIST = [150, 178, 255];
 export const LIGHT = [178, 200, 255];
 
 let SPR = null;
-export async function loadSprite(file = 'sprite.png') {
+export async function loadSprite(file = join(HERE, 'sprite.png')) {
   const { data, info } = await sharp(file).ensureAlpha()
     .resize(Math.round(474 * PREF), Math.round(349 * PREF), { kernel: 'lanczos3' })
     .raw().toBuffer({ resolveWithObject: true });

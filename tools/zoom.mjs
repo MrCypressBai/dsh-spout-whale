@@ -1,6 +1,5 @@
-import { createRequire } from 'module';
-const require = createRequire('/Users/cypress/.dsh/profiles/desktop/package.json');
-const sharp = require('sharp');
+import { sharp, HERE, ROOT } from './env.mjs';
+import { join } from 'node:path';
 const CW = 192, CH = 208, S = Number(process.argv[2] || 3);
 const cells = process.argv[3].split(',').map(s => s.split(':').map(Number)); // row:col
 const cols = Math.min(cells.length, 4), rows = Math.ceil(cells.length / cols);
@@ -8,7 +7,7 @@ const OW = cols * CW * S, OH = rows * CH * S;
 const out = Buffer.alloc(OW * OH * 3, 246);
 for (let i = 0; i < cells.length; i++) {
   const [row, col] = cells[i];
-  const { data } = await sharp('/Users/cypress/.dsh/codex-pet/pets/spout-whale/spritesheet.png')
+  const { data } = await sharp(join(ROOT, 'spritesheet.png'))
     .extract({ left: col * CW, top: row * CH, width: CW, height: CH }).ensureAlpha()
     .raw().toBuffer({ resolveWithObject: true });
   const ox = (i % cols) * CW * S, oy = Math.floor(i / cols) * CH * S;
@@ -28,5 +27,5 @@ for (let i = 0; i < cells.length; i++) {
     const t = ((oy + gy) * OW + ox + x) * 3; out[t] = 240; out[t + 1] = 120; out[t + 2] = 120;
   }
 }
-await sharp(out, { raw: { width: OW, height: OH, channels: 3 } }).png().toFile('zoom.png');
+await sharp(out, { raw: { width: OW, height: OH, channels: 3 } }).png().toFile(join(HERE, 'zoom.png'));
 console.log('zoom.png ' + OW + 'x' + OH);

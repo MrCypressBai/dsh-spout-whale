@@ -1,8 +1,7 @@
 // sprite.mjs — 参考图 -> 干净的透明鲸鱼精灵（sprite.png / sprite-meta.json）
-import { createRequire } from 'module';
+import { sharp, HERE } from './env.mjs';
+import { join } from 'node:path';
 import fs from 'fs';
-const require = createRequire('/Users/cypress/.dsh/profiles/desktop/package.json');
-const sharp = require('sharp');
 
 const TOP = 59, W = 474, H = 349;
 const NOISE = 0.10;    // 背景近白伪影 alpha 噪声底
@@ -35,7 +34,7 @@ function components(mask, W, H) {
   return out;
 }
 
-const { data, info } = await sharp('src.webp')
+const { data, info } = await sharp(join(HERE, 'src.webp'))
   .extract({ left: 0, top: TOP, width: W, height: H })
   .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 if (info.channels !== 4) throw new Error('expect rgba, got ' + info.channels);
@@ -121,7 +120,7 @@ for (let i = 0; i < N; i++) {
   out[4 * i + 2] = Math.round(col[3 * i + 2]);
   out[4 * i + 3] = Math.round(alpha[i] * 255);
 }
-await sharp(out, { raw: { width: W, height: H, channels: 4 } }).png().toFile('sprite.png');
+await sharp(out, { raw: { width: W, height: H, channels: 4 } }).png().toFile(join(HERE, 'sprite.png'));
 
 // --- 品红底 2x 预览（暴露白边/暗边） ---
 const prev = Buffer.alloc(N * 4);
@@ -132,9 +131,9 @@ for (let i = 0; i < N; i++) {
   prev[4 * i + 2] = Math.round(col[3 * i + 2] * a + 255 * (1 - a));
   prev[4 * i + 3] = 255;
 }
-await sharp(prev, { raw: { width: W, height: H, channels: 4 } }).resize(Math.round(W * 1.5), Math.round(H * 1.5)).png().toFile('sprite-magenta.png');
+await sharp(prev, { raw: { width: W, height: H, channels: 4 } }).resize(Math.round(W * 1.5), Math.round(H * 1.5)).png().toFile(join(HERE, 'sprite-magenta.png'));
 
-fs.writeFileSync('sprite-meta.json', JSON.stringify({ W, H, TOP }, null, 2));
+fs.writeFileSync(join(HERE, 'sprite-meta.json'), JSON.stringify({ W, H, TOP }, null, 2));
 console.log('OK sprite.png / sprite-magenta.png');
 
 // --- 精确颜色直方图（实心像素） ---

@@ -2,8 +2,12 @@
 *.app/
 build/
 node_modules/
+
+# 图集管线的中间产物（跑 tools/ 时生成）
 tools/src.webp
 tools/sprite.png
-tools/*-preview*.png
+tools/sprite-magenta.png
+tools/sprite-meta.json
+tools/preview-*.png
 tools/strip-row*.png
 tools/zoom.png
